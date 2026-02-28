@@ -17,7 +17,7 @@ This repository (`action-repo`) serves as the **source repository** for GitHub w
 
 ### 1. Initial Setup
 
-```bash
+```
 # Clone this repository
 git clone <action-repo-url>
 cd action-repo
@@ -89,7 +89,7 @@ https://webhook.mycompany.com/webhook
 
 #### Verify Data Was Stored:
 
-```bash
+```
 # Check MongoDB directly
 mongo
 > use github_actions
@@ -103,7 +103,7 @@ curl http://localhost:5000/api/actions
 
 ### Trigger a PUSH Event
 
-```bash
+```
 # Make a change to any file
 echo "Some change" >> README.md
 
@@ -120,7 +120,7 @@ git push origin main
 
 ### Trigger a PULL_REQUEST Event
 
-```bash
+```
 # Create a new branch
 git checkout -b feature-branch
 
@@ -171,7 +171,7 @@ action-repo/
 ### What Gets Sent for Each Event Type
 
 #### PUSH Event
-```json
+```
 {
   "pusher": {
     "name": "john-doe"
@@ -182,7 +182,7 @@ action-repo/
 ```
 
 #### PULL_REQUEST Event
-```json
+```
 {
   "action": "opened",
   "pull_request": {
@@ -203,38 +203,6 @@ action-repo/
 #### PUSH (Merge Commit)
 Detected as a special PUSH event when merging PRs.
 
-## Troubleshooting
-
-### Webhook Not Firing
-
-1. **Check Network Connectivity**
-   - Is webhook receiver running and accessible?
-   - Try accessing the URL in browser
-
-2. **Verify Webhook Configuration**
-   - Go to Settings → Webhooks
-   - Click the webhook to see details
-   - Check "Recent Deliveries" tab
-
-3. **Check GitHub Status**
-   - Visit https://www.githubstatus.com/
-   - Ensure no platform issues
-
-4. **Enable Webhook Debug Logging**
-   - In webhook-repo, add:
-   ```python
-   @app.before_request
-   def log_request():
-       print(f"Headers: {dict(request.headers)}")
-       print(f"Body: {request.get_json()}")
-   ```
-
-### Data Not Appearing in MongoDB
-
-1. **Verify webhook was received** - Check recent deliveries
-2. **Check webhook-repo logs** - Look for errors in Flask output
-3. **Verify MongoDB connection** - Test MongoDB connection in webhook-repo
-
 ### Testing Locally with ngrok
 
 ```bash
@@ -250,60 +218,3 @@ ngrok http 5000
 
 # Now local webhooks will work!
 ```
-
-## Best Practices
-
-1. **Security:**
-   - In production, use HTTPS URLs
-   - Consider GitHub webhook secrets for signing
-   - Never expose MongoDB credentials
-
-2. **Reliability:**
-   - Monitor webhook deliveries in GitHub UI
-   - Set up alerts for failed deliveries
-   - Keep webhook-repo running and monitored
-
-3. **Performance:**
-   - Index MongoDB fields for faster queries
-   - Cache webhook responses appropriately
-   - Consider rate limiting if needed
-
-## Related Repositories
-
-- **webhook-repo** - Flask endpoint that receives webhooks
-- This repo (action-repo) - Source of webhook events
-
-## Integration Checklist
-
-- [ ] action-repo created and pushed to GitHub
-- [ ] webhook-repo running and accessible
-- [ ] MongoDB started and initialized
-- [ ] GitHub webhook configured in action-repo settings
-- [ ] Webhook URL points to correct endpoint
-- [ ] Test PUSH event and verify in MongoDB
-- [ ] Test PULL_REQUEST event and verify
-- [ ] Access UI at http://localhost:5000/ui
-- [ ] UI displays recent events with auto-refresh
-- [ ] All event messages formatted correctly
-
-## Summary
-
-This repository demonstrates the source side of GitHub webhook integration. The flow is:
-
-```
-You make a change in action-repo
-    ↓
-GitHub detects the event (push, PR, merge)
-    ↓
-GitHub sends webhook to webhook-repo endpoint
-    ↓
-webhook-repo processes and stores in MongoDB
-    ↓
-UI polls MongoDB every 15 seconds
-    ↓
-Latest events displayed on dashboard
-```
-
----
-
-For questions or issues, refer to the webhook-repo README for server-side documentation.
