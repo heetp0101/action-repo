@@ -51,9 +51,10 @@ This is the **most important step**. You need to configure a webhook in this rep
    
    - **Which events would you like to trigger this webhook?**
      - Select "Let me select individual events"
-     - ✅ Check **Pushes**
-     - ✅ Check **Pull requests**
-     - ✅ Check **Pushes** (for merge detection)
+     - ✅ Check **Pushes** (for PUSH events)
+     - ✅ Check **Pull requests** (for PULL_REQUEST and MERGE events)
+     - Note: MERGE events are detected when a PR is closed with merged=true
+     - "Merge groups" option is NOT needed
    
    - **Active:** Make sure ✅ is checked
    
